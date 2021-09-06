@@ -88,7 +88,13 @@ namespace FeedManager.Task2.Tests
             {
                 SourceAccountId = feed.SourceAccountId,
                 StagingId = feed.StagingId,
-                CurrentPrice = 45M
+                CurrentPrice = 45M,
+                CounterpartyId = 10,
+                PrincipalId = 13,
+                Sedol = 50M,
+                AssetValue = 10M,
+                SourceTradeRef = "ref",
+                ValuationDate = DateTime.Now
             };
         }
 
@@ -97,7 +103,14 @@ namespace FeedManager.Task2.Tests
             return new EmFeed
             {
                 SourceAccountId = feed.SourceAccountId + 1,
-                StagingId = feed.StagingId + 1
+                StagingId = feed.StagingId + 1,
+                CounterpartyId = 10,
+                PrincipalId = 13,
+                CurrentPrice = 12.34M,
+                Sedol = 50M,
+                AssetValue = 10M,
+                SourceTradeRef = "ref",
+                ValuationDate = DateTime.Now
             };
         }
 
