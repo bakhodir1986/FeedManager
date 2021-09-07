@@ -7,7 +7,13 @@ namespace FeedManager.Task2.Matchers
     {
         public bool Match(Delta1Feed current, Delta1Feed other)
         {
-            throw new NotImplementedException();
+            if (current.CounterpartyId == other.CounterpartyId &&
+                current.PrincipalId == other.PrincipalId)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

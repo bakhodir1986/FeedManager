@@ -87,6 +87,12 @@ namespace FeedManager.Task3.Tests
             {
                 CounterpartyId = feed.CounterpartyId,
                 PrincipalId = feed.PrincipalId,
+                Isin = feed.Isin,
+                MaturityDate = feed.MaturityDate,
+                SourceAccountId = feed.SourceAccountId,
+                SourceTradeRef = feed.SourceTradeRef,
+                StagingId = feed.StagingId,
+                ValuationDate = feed.ValuationDate,
                 CurrentPrice = 45M
             };
         }
@@ -97,7 +103,13 @@ namespace FeedManager.Task3.Tests
             {
                 CounterpartyId = feed.CounterpartyId + 1,
                 PrincipalId = feed.PrincipalId + 1,
-                CurrentPrice = feed.CurrentPrice + 2
+                CurrentPrice = feed.CurrentPrice + 2,
+                Isin = feed.Isin,
+                MaturityDate = feed.MaturityDate,
+                SourceAccountId = feed.SourceAccountId,
+                SourceTradeRef = feed.SourceTradeRef,
+                StagingId = feed.StagingId,
+                ValuationDate = feed.ValuationDate,
             };
         }
 
