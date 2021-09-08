@@ -24,27 +24,27 @@ namespace FeedManager.Task2.Importers
             feedMatcher = validatorsAndMatchersFactory.CreateMatcher();
         }
 
-        public override List<Delta1Feed> LoadFeeds()
+        protected override List<Delta1Feed> LoadFeeds()
         {
             return databaseRepository.LoadFeeds<Delta1Feed>();
         }
 
-        public override bool Match(Delta1Feed current, Delta1Feed other)
+        protected override bool Match(Delta1Feed current, Delta1Feed other)
         {
             return feedMatcher.Match(current, other);
         }
 
-        public override void SaveErrors(int feedStagingId, List<string> errors)
+        protected override void SaveErrors(int feedStagingId, List<string> errors)
         {
             databaseRepository.SaveErrors(feedStagingId, errors);
         }
 
-        public override void SaveFeed(Delta1Feed feed)
+        protected override void SaveFeed(Delta1Feed feed)
         {
             databaseRepository.SaveFeed(feed);
         }
 
-        public override ValidateResult Validate(Delta1Feed feed)
+        protected override ValidateResult Validate(Delta1Feed feed)
         {
             return feedValidator.Validate(feed);
         }

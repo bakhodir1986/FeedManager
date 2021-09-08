@@ -43,14 +43,14 @@ namespace FeedManager.Task2.Importers
             }
         }
 
-        public abstract ValidateResult Validate(T feed);
+        protected abstract ValidateResult Validate(T feed);
 
-        public abstract List<T> LoadFeeds();
+        protected abstract List<T> LoadFeeds();
 
-        public abstract void SaveFeed(T feed);
+        protected abstract void SaveFeed(T feed);
 
-        public abstract bool Match(T current, T other);
+        protected abstract bool Match(T current, T other);
 
-        public abstract void SaveErrors(int feedStagingId, List<String> errors);
+        protected abstract void SaveErrors(int feedStagingId, List<String> errors);
     }
 }

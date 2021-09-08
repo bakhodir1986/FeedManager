@@ -25,27 +25,27 @@ namespace FeedManager.Task2.Importers
             feedMatcher = validatorsAndMatchersFactory.CreateMatcher();
         }
 
-        public override List<EmFeed> LoadFeeds()
+        protected override List<EmFeed> LoadFeeds()
         {
             return databaseRepository.LoadFeeds<EmFeed>();
         }
 
-        public override bool Match(EmFeed current, EmFeed other)
+        protected override bool Match(EmFeed current, EmFeed other)
         {
             return feedMatcher.Match(current, other);
         }
 
-        public override void SaveErrors(int feedStagingId, List<string> errors)
+        protected override void SaveErrors(int feedStagingId, List<string> errors)
         {
             databaseRepository.SaveErrors(feedStagingId, errors);
         }
 
-        public override void SaveFeed(EmFeed feed)
+        protected override void SaveFeed(EmFeed feed)
         {
             databaseRepository.SaveFeed(feed);
         }
 
-        public override ValidateResult Validate(EmFeed feed)
+        protected override ValidateResult Validate(EmFeed feed)
         {
             return feedValidator.Validate(feed);
         }
