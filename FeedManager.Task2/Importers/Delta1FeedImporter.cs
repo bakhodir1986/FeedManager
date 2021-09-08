@@ -15,31 +15,15 @@ namespace FeedManager.Task2.Importers
         private readonly IFeedMatcher<Delta1Feed> feedMatcher;
 
 
-        public Delta1FeedImporter(IDatabaseRepository database)
+        public Delta1FeedImporter(IDatabaseRepository database) : base(database)
         {
-            databaseRepository = database;
             feedValidator = new Delta1FeedValidator();
             feedMatcher = new Delta1FeedMatcher();
-        }
-
-        protected override List<Delta1Feed> LoadFeeds()
-        {
-            return databaseRepository.LoadFeeds<Delta1Feed>();
         }
 
         protected override bool Match(Delta1Feed current, Delta1Feed other)
         {
             return feedMatcher.Match(current, other);
-        }
-
-        protected override void SaveErrors(int feedStagingId, List<string> errors)
-        {
-            databaseRepository.SaveErrors(feedStagingId, errors);
-        }
-
-        protected override void SaveFeed(Delta1Feed feed)
-        {
-            databaseRepository.SaveFeed(feed);
         }
 
         protected override ValidateResult Validate(Delta1Feed feed)

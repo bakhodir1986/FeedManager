@@ -11,6 +11,12 @@ namespace FeedManager.Task2.Importers
 {
     public abstract class Importer<T> where T : TradeFeed
     {
+        private readonly IDatabaseRepository database;
+        protected Importer(IDatabaseRepository databaseRepository)
+        {
+            database = databaseRepository;
+        }
+
         public void Import(IEnumerable<T> feeds)
         {
             foreach (var feed in feeds)
@@ -19,11 +25,11 @@ namespace FeedManager.Task2.Importers
 
                 if (resultOfValidation.IsValid)
                 {
-                    var listOfEmFeeds = LoadFeeds();
+                    var listOfEmFeeds = database.LoadFeeds<T>();
 
                     if (listOfEmFeeds.Count == 0)
                     {
-                        SaveFeed(feed);
+                        database.SaveFeed(feed);
                     }
                     else
                     {
@@ -31,26 +37,20 @@ namespace FeedManager.Task2.Importers
                         {
                             if (!Match(feed, repoFeed))
                             {
-                                SaveFeed(feed);
+                                database.SaveFeed(feed);
                             }
                         }
                     }
                 }
                 else
                 {
-                    SaveErrors(feed.StagingId, resultOfValidation.Errors);
+                    database.SaveErrors(feed.StagingId, resultOfValidation.Errors);
                 }
             }
         }
 
         protected abstract ValidateResult Validate(T feed);
 
-        protected abstract List<T> LoadFeeds();
-
-        protected abstract void SaveFeed(T feed);
-
         protected abstract bool Match(T current, T other);
-
-        protected abstract void SaveErrors(int feedStagingId, List<String> errors);
     }
 }
