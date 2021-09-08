@@ -6,9 +6,9 @@ using System.Text;
 
 namespace FeedManager.Task1.FeedValidators
 {
-    public class BaseValidator
+    public abstract class BaseValidator
     {
-        public ValidateResult Validate(TradeFeed feed)
+        public virtual ValidateResult Validate(TradeFeed feed)
         {
             var result = new ValidateResult
             {

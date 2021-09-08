@@ -1,4 +1,5 @@
-﻿using FeedManager.Task1.FeedValidators;
+﻿using FeedManager.Task1.FeedImporters;
+using FeedManager.Task1.FeedValidators;
 using FeedManager.Task2.Database;
 using FeedManager.Task2.Feeds;
 using FeedManager.Task2.Matchers;
@@ -8,49 +9,48 @@ using System.Text;
 
 namespace FeedManager.Task2.Importers
 {
-    public class Importer<T> where T : TradeFeed
+    public abstract class Importer<T> where T : TradeFeed
     {
-        private readonly IFeedValidator<T> feedValidator;
-        private readonly IFeedMatcher<T> feedMatcher;
-        private readonly IDatabaseRepository database;
-
-        public Importer(IDatabaseRepository repository , IFeedValidator<T> validator, IFeedMatcher<T> matcher)
-        {
-            feedValidator = validator;
-            database = repository;
-            feedMatcher = matcher;
-        }
-
         public void Import(IEnumerable<T> feeds)
         {
             foreach (var feed in feeds)
             {
-                var resultOfValidation = feedValidator.Validate(feed);
+                var resultOfValidation = Validate(feed);
 
                 if (resultOfValidation.IsValid)
                 {
-                    var listOfEmFeeds = database.LoadFeeds<T>();
+                    var listOfEmFeeds = LoadFeeds();
 
                     if (listOfEmFeeds.Count == 0)
                     {
-                        database.SaveFeed(feed);
+                        SaveFeed(feed);
                     }
                     else
                     {
                         foreach (var repoFeed in listOfEmFeeds)
                         {
-                            if (!feedMatcher.Match(feed, repoFeed))
+                            if (!Match(feed, repoFeed))
                             {
-                                database.SaveFeed(feed);
+                                SaveFeed(feed);
                             }
                         }
                     }
                 }
                 else
                 {
-                    database.SaveErrors(feed.StagingId, resultOfValidation.Errors);
+                    SaveErrors(feed.StagingId, resultOfValidation.Errors);
                 }
             }
         }
+
+        public abstract ValidateResult Validate(T feed);
+
+        public abstract List<T> LoadFeeds();
+
+        public abstract void SaveFeed(T feed);
+
+        public abstract bool Match(T current, T other);
+
+        public abstract void SaveErrors(int feedStagingId, List<String> errors);
     }
 }

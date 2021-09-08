@@ -1,4 +1,5 @@
 ﻿using FeedManager.Task1.FeedImporters;
+using FeedManager.Task1.FeedValidators;
 using FeedManager.Task2.Database;
 using FeedManager.Task2.Feeds;
 using FeedManager.Task2.Matchers;
@@ -8,18 +9,42 @@ using System.Linq;
 
 namespace FeedManager.Task2.Importers
 {
-    public class EmFeedImporter
+    public class EmFeedImporter: Importer<EmFeed>
     {
-        private readonly Importer<EmFeed> importerHelper;
+        private readonly IDatabaseRepository databaseRepository;
+        private readonly IFeedValidator<EmFeed> feedValidator;
+        private readonly IFeedMatcher<EmFeed> feedMatcher;
 
         public EmFeedImporter(IDatabaseRepository database)
         {
-            importerHelper = new Importer<EmFeed>(database, new EmFeedValidator(), new EmFeedMatcher());
+            databaseRepository = database;
+            feedValidator = new EmFeedValidator();
+            feedMatcher = new EmFeedMatcher();
         }
 
-        public void Import(IEnumerable<EmFeed> feeds)
+        public override List<EmFeed> LoadFeeds()
         {
-            importerHelper.Import(feeds);
+            return databaseRepository.LoadFeeds<EmFeed>();
+        }
+
+        public override bool Match(EmFeed current, EmFeed other)
+        {
+            return feedMatcher.Match(current, other);
+        }
+
+        public override void SaveErrors(int feedStagingId, List<string> errors)
+        {
+            databaseRepository.SaveErrors(feedStagingId, errors);
+        }
+
+        public override void SaveFeed(EmFeed feed)
+        {
+            databaseRepository.SaveFeed(feed);
+        }
+
+        public override ValidateResult Validate(EmFeed feed)
+        {
+            return feedValidator.Validate(feed);
         }
     }
 }

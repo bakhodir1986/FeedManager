@@ -1,4 +1,5 @@
 ﻿using FeedManager.Task1.FeedImporters;
+using FeedManager.Task1.FeedValidators;
 using FeedManager.Task2.Database;
 using FeedManager.Task2.Feeds;
 using FeedManager.Task2.Matchers;
@@ -8,22 +9,44 @@ using System.Collections.Generic;
 
 namespace FeedManager.Task2.Importers
 {
-    public class Delta1FeedImporter
+    public class Delta1FeedImporter : Importer<Delta1Feed>
     {
-        private readonly Importer<Delta1Feed> importerHelper;
-        private ValidatorsAndMatchersFactory<Delta1Feed> validatorsAndMatchers;
+        private readonly IDatabaseRepository databaseRepository;
+        private readonly IFeedValidator<Delta1Feed> feedValidator;
+        private readonly IFeedMatcher<Delta1Feed> feedMatcher;
+        private readonly ValidatorsAndMatchersFactory<Delta1Feed> validatorsAndMatchersFactory;
 
         public Delta1FeedImporter(IDatabaseRepository database)
         {
-            validatorsAndMatchers = new Delta1FeedVMFactory<Delta1Feed>();
-            importerHelper = new Importer<Delta1Feed>(database
-                , validatorsAndMatchers.CreateValidator()
-                , validatorsAndMatchers.CreateMatcher());
+            validatorsAndMatchersFactory = new Delta1FeedVMFactory<Delta1Feed>();
+            databaseRepository = database;
+            feedValidator = validatorsAndMatchersFactory.CreateValidator();
+            feedMatcher = validatorsAndMatchersFactory.CreateMatcher();
         }
 
-        public void Import(IEnumerable<Delta1Feed> feeds)
+        public override List<Delta1Feed> LoadFeeds()
         {
-            importerHelper.Import(feeds);
+            return databaseRepository.LoadFeeds<Delta1Feed>();
+        }
+
+        public override bool Match(Delta1Feed current, Delta1Feed other)
+        {
+            return feedMatcher.Match(current, other);
+        }
+
+        public override void SaveErrors(int feedStagingId, List<string> errors)
+        {
+            databaseRepository.SaveErrors(feedStagingId, errors);
+        }
+
+        public override void SaveFeed(Delta1Feed feed)
+        {
+            databaseRepository.SaveFeed(feed);
+        }
+
+        public override ValidateResult Validate(Delta1Feed feed)
+        {
+            return feedValidator.Validate(feed);
         }
     }
 }
